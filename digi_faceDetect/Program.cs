@@ -95,7 +95,7 @@ namespace CSHttpClientSample
                 string contentString = await response.Content.ReadAsStringAsync();
 
 
-                //string jsonString = contentString;  
+                //string jsonString = contentString;   
                 JArray jObject = JArray.Parse(contentString);
                 string displayName = (string)jObject.SelectToken("faceId");
                 string type = (string)jObject.SelectToken("signInNames[0].type");
