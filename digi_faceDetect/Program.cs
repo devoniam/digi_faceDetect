@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -93,21 +95,36 @@ namespace CSHttpClientSample
 
                 // Get the JSON response.   
                 string contentString = await response.Content.ReadAsStringAsync();
-
+                 
 
                 //string jsonString = contentString;   
-                JArray jObject = JArray.Parse(contentString);
-                string displayName = (string)jObject.SelectToken("faceId");
-                string type = (string)jObject.SelectToken("signInNames[0].type");
-                string value = (string)jObject.SelectToken("signInNames[0].value");
-                Console.WriteLine("{0}, {1}, {2}", displayName, type, value);
-                JArray signInNames = (JArray)jObject.SelectToken("signInNames");
-                foreach (JToken signInName in signInNames)
+                var o = JToken.Parse(contentString);
+                var a = o.Children<JProperty>().FirstOrDefault(x => x.Name == "faceId").Value;
+
+
+                foreach (var item in a.Children())
                 {
-                    type = (string)signInName.SelectToken("type");
-                    value = (string)signInName.SelectToken("value");
-                    Console.WriteLine("{0}, {1}", type, value);
+                    var itemProperties = item.Children<JProperty>();
+                    //you could do a foreach or a linq here depending on what you need to do exactly with the value
+                    var myElement = itemProperties.FirstOrDefault(x => x.Name == "url");
+                   // var myElementValue = myElement.Value; ////This is a JValue type
                 }
+
+
+
+
+                //JArray jObject = JArray.Parse(contentString);
+                //string displayName = (string)jObject.SelectToken("faceId");
+                //string type = (string)jObject.SelectToken("contentString[0].type");
+                //string value = (string)jObject.SelectToken("contentString[0].value");
+                //Console.WriteLine("{0}, {1}, {2}", displayName, type, value);
+                //JArray signInNames = (JArray)jObject.SelectToken("fear");
+                //foreach (JToken signInName in signInNames)
+                //{
+                //    type = (string)signInName.SelectToken("type");
+                //    value = (string)signInName.SelectToken("value");
+                //    Console.WriteLine("{0}, {1}", type, value);
+                //}
 
                 // Show me the raw unformatted response
                 Console.WriteLine("Show me the raw unformatted response");
